@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#060606">
+<title>了解我 · LINMO</title>
+<style>
+:root{--bg:#060606;--fg:#f2f2f2;--dim:#9a9a9a;--line:rgba(255,255,255,.16)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--fg);
+  font-family:"PingFang SC","Microsoft YaHei","Segoe UI",system-ui,sans-serif;
+  min-height:100dvh;display:flex;flex-direction:column;overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+/* ---- 网格底纹 ---- */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:44px 44px;
+  -webkit-mask-image:radial-gradient(ellipse at 50% 42%,#000 25%,transparent 78%);
+          mask-image:radial-gradient(ellipse at 50% 42%,#000 25%,transparent 78%);
+}
+/* ---- 扫描线 ---- */
+.scan{position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px)}
+/* ---- 3D 粒子画布 ---- */
+#fx{position:fixed;inset:0;z-index:1}
+/* ---- 背景大字 ---- */
+.bgt{position:fixed;right:2px;top:50%;transform:translateY(-50%);z-index:1;
+  writing-mode:vertical-rl;font:800 82px/1 Consolas,monospace;letter-spacing:.3em;
+  color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.06);
+  pointer-events:none;user-select:none}
+/* ---- 十字准星 ---- */
+.cross{position:fixed;width:18px;height:18px;z-index:1;opacity:.45;pointer-events:none}
+.cross::before,.cross::after{content:"";position:absolute;background:#fff}
+.cross::before{left:50%;top:0;bottom:0;width:1px}
+.cross::after{top:50%;left:0;right:0;height:1px}
+.c1{left:16px;top:100px}.c2{right:16px;bottom:64px}
+/* ---- 顶栏 ---- */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:4;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:calc(env(safe-area-inset-top) + 12px) 16px 10px;
+  font:11px/1 Consolas,"Courier New",monospace;color:var(--dim);letter-spacing:.14em}
+.topbar b{color:var(--fg);font-weight:400}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#fff;
+  margin-right:6px;animation:blink 1.4s steps(2) infinite;vertical-align:1px}
+@keyframes blink{50%{opacity:.12}}
+/* ---- 主体 ---- */
+main{flex:1;position:relative;z-index:3;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  padding:80px 22px 74px}
+.tag{font:11px Consolas,monospace;letter-spacing:.4em;color:var(--dim);
+  border:1px solid var(--line);padding:7px 10px 7px 14px}
+h1.glitch{margin:20px 0 4px;font-size:clamp(3.2rem,17vw,6.6rem);font-weight:800;
+  letter-spacing:.16em;text-indent:.16em;position:relative;z-index:0;
+  animation:flick 5s infinite}
+@keyframes flick{0%,90%,100%{opacity:1}92%{opacity:.5}93%{opacity:1}96%{opacity:.72}97%{opacity:1}}
+.glitch::before,.glitch::after{
+  content:attr(data-text);position:absolute;inset:0;z-index:-1;
+  clip-path:inset(0 0 100% 0)}
+.glitch::before{color:#8d8d8d;animation:g1 3s steps(2,end) infinite}
+.glitch::after{color:#3c3c3c;animation:g2 3.7s steps(2,end) infinite}
+@keyframes g1{
+  0%,84%,100%{clip-path:inset(0 0 100% 0);transform:none}
+  86%{clip-path:inset(8% 0 62% 0);transform:translate(-5px,-2px)}
+  89%{clip-path:inset(52% 0 22% 0);transform:translate(4px,1px)}
+  92%{clip-path:inset(72% 0 4% 0);transform:translate(-3px,2px)}
+  95%{clip-path:inset(30% 0 48% 0);transform:translate(5px,-1px)}}
+@keyframes g2{
+  0%,78%,100%{clip-path:inset(0 0 100% 0);transform:none}
+  80%{clip-path:inset(64% 0 12% 0);transform:translate(4px,2px)}
+  84%{clip-path:inset(18% 0 66% 0);transform:translate(-4px,-1px)}
+  88%{clip-path:inset(44% 0 34% 0);transform:translate(3px,-2px)}}
+.sub{font:11px Consolas,monospace;letter-spacing:.52em;color:var(--dim);margin-bottom:24px}
+.hr{width:min(420px,82%);height:1px;margin:6px 0 26px;position:relative;
+  background:linear-gradient(90deg,transparent,var(--line) 18%,var(--line) 82%,transparent)}
+.hr::after{content:"+";position:absolute;left:50%;top:50%;transform:translate(-50%,-53%);
+  color:var(--dim);font:13px Consolas,monospace;background:var(--bg);padding:0 9px}
+/* ---- 资料卡 ---- */
+.card{width:min(420px,100%);text-align:left;position:relative;
+  border:1px solid var(--line);background:rgba(255,255,255,.03);backdrop-filter:blur(2px)}
+.card::before,.card::after{content:"";position:absolute;width:14px;height:14px}
+.card::before{top:-1px;left:-1px;border-top:2px solid #fff;border-left:2px solid #fff}
+.card::after{bottom:-1px;right:-1px;border-bottom:2px solid #fff;border-right:2px solid #fff}
+.card-h{display:flex;justify-content:space-between;padding:10px 16px;
+  font:10px Consolas,monospace;letter-spacing:.3em;color:var(--dim);
+  border-bottom:1px solid var(--line)}
+.row{display:flex;justify-content:space-between;align-items:baseline;
+  padding:13px 16px;border-top:1px dashed rgba(255,255,255,.12);transition:background .2s}
+.row:first-of-type{border-top:0}
+.row:hover{background:rgba(255,255,255,.05)}
+.row span{font:11px Consolas,monospace;color:var(--dim);letter-spacing:.34em}
+.row b{font-size:16px;font-weight:600;letter-spacing:.24em}
+.cursor{display:inline-block;width:8px;height:14px;background:#fff;margin-left:6px;
+  vertical-align:-2px;animation:blink 1s steps(2) infinite}
+/* ---- 按钮 ---- */
+.btns{margin-top:36px;width:min(420px,100%);display:flex;flex-direction:column;gap:14px}
+.btn{display:flex;align-items:center;gap:16px;padding:16px 18px;
+  border:1px solid rgba(255,255,255,.55);color:var(--fg);text-decoration:none;
+  font-size:15px;font-weight:600;letter-spacing:.44em;text-indent:.1em;
+  position:relative;overflow:hidden;transition:background .22s,color .22s,transform .15s}
+.btn .no{font:11px Consolas,monospace;color:var(--dim);letter-spacing:.1em;text-indent:0}
+.btn .ar{margin-left:auto;font-family:Consolas,monospace;transition:transform .22s;text-indent:0}
+.btn:hover{background:var(--fg);color:#050505}
+.btn:hover .no{color:#666}
+.btn:hover .ar{transform:translateX(6px)}
+.btn:active{transform:scale(.97)}
+.hint{margin-top:18px;font:10px Consolas,monospace;color:#666;letter-spacing:.36em}
+/* ---- 底部滚动条 ---- */
+.tkwrap{position:fixed;left:0;right:0;bottom:0;height:34px;z-index:4;overflow:hidden;
+  display:flex;align-items:center;border-top:1px solid var(--line);
+  background:rgba(6,6,6,.82);backdrop-filter:blur(4px)}
+.tk{white-space:nowrap;font:11px Consolas,monospace;color:var(--dim);
+  letter-spacing:.28em;animation:tk 24s linear infinite}
+@keyframes tk{to{transform:translateX(-50%)}}
+/* ---- 交错入场 ---- */
+.rise{opacity:0;transform:translateY(44px)}
+body.on .rise{animation:rise .85s cubic-bezier(.16,1,.3,1) both;animation-delay:var(--d,0s)}
+@keyframes rise{from{opacity:0;transform:translateY(44px)}to{opacity:1;transform:translateY(0)}}
+/* ---- 警告加载 ---- */
+#boot{position:fixed;inset:0;z-index:60;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .5s ease,visibility .5s}
+#boot.out{opacity:0;visibility:hidden}
+.bstripes{position:absolute;left:0;right:0;height:12px;opacity:.85;
+  background:repeating-linear-gradient(45deg,#e8e8e8 0 10px,#0a0a0a 10px 20px);
+  animation:slide .4s linear infinite}
+.bstripes.tp{top:0}.bstripes.bt{bottom:0}
+@keyframes slide{to{background-position:28px 0}}
+.bwrap{width:min(320px,78vw);text-align:left}
+.warn{display:flex;align-items:center;gap:11px;font:700 12px Consolas,monospace;
+  letter-spacing:.3em;margin-bottom:14px;animation:flick 1.6s steps(2) infinite}
+.tri{width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;
+  border-bottom:19px solid #fff;position:relative;flex:none}
+.tri i{position:absolute;left:-1.5px;top:4px;width:3px;height:8px;background:#060606}
+.tri u{position:absolute;left:-1.5px;bottom:2px;width:3px;height:3px;background:#060606}
+.blog{font:11px/1.9 Consolas,monospace;color:var(--dim);letter-spacing:.12em;
+  min-height:21px;white-space:nowrap}
+.bbar{margin-top:12px;height:12px;border:1px solid rgba(255,255,255,.6);padding:2px}
+.bbar i{display:block;height:100%;width:0;
+  background:repeating-linear-gradient(-45deg,#fff 0 8px,#0a0a0a 8px 16px);
+  animation:slide .35s linear infinite}
+.bpct{margin-top:8px;display:flex;justify-content:space-between;
+  font:11px Consolas,monospace;letter-spacing:.2em}
+.bpct em{font-style:normal;color:var(--dim)}
+/* ---- 跳转白闪 ---- */
+#flash{position:fixed;inset:0;z-index:58;background:#f2f2f2;opacity:0;
+  pointer-events:none;transition:opacity .22s}
+body.leave #flash{opacity:.92}
+/* ---- 移动端 ---- */
+@media (max-width:520px){
+  .bgt{display:none}
+  h1.glitch{letter-spacing:.1em;text-indent:.1em}
+  .btn{letter-spacing:.3em}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .rise{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- 警告加载层 -->
+<div id="boot">
+  <div class="bstripes tp"></div>
+  <div class="bstripes bt"></div>
+  <div class="bwrap">
+    <div class="warn"><span class="tri"><i></i><u></u></span>WARNING / 系统提示</div>
+    <div class="blog" id="log">&gt; 正在建立连接 ...</div>
+    <div class="bbar"><i id="bar"></i></div>
+    <div class="bpct"><em>LOADING ARCHIVE</em><span id="pct">0%</span></div>
+  </div>
+</div>
+
+<canvas id="fx"></canvas>
+<div class="scan"></div>
+<div class="bgt">LINMO</div>
+<div class="cross c1"></div>
+<div class="cross c2"></div>
+
+<header class="topbar">
+  <span>LM-018 <b>// PERSONAL FILE</b></span>
+  <span><i class="dot"></i>ONLINE</span>
+</header>
+
+<main>
+  <div class="tag rise" style="--d:.05s">SELF INTRODUCTION · 自介档案</div>
+  <h1 class="glitch rise" data-text="了解我" style="--d:.15s">了解我</h1>
+  <div class="sub rise" style="--d:.28s">NICE TO MEET YOU</div>
+  <div class="hr rise" style="--d:.36s"></div>
+
+  <div class="card rise" style="--d:.45s">
+    <div class="card-h"><span>FILE / LM-018</span><span>ARCHIVE OK</span></div>
+    <div class="row"><span>姓名 NAME</span><b>林陌</b></div>
+    <div class="row"><span>性别 GENDER</span><b>女</b></div>
+    <div class="row"><span>年龄 AGE</span><b>18<i class="cursor"></i></b></div>
+  </div>
+
+  <nav class="btns">
+    <a class="btn rise" data-leave href="style.html" style="--d:.62s">
+      <span class="no">01</span>风 格<span class="ar">-&gt;</span></a>
+    <a class="btn rise" data-leave href="profile.html" style="--d:.76s">
+      <span class="no">02</span>个人资料<span class="ar">-&gt;</span></a>
+    <a class="btn rise" data-leave href="notice.html" style="--d:.90s">
+      <span class="no">03</span>个人须知<span class="ar">-&gt;</span></a>
+  </nav>
+
+  <div class="hint rise" style="--d:1.05s">点击按钮 · 进入对应页面</div>
+</main>
+
+<footer class="tkwrap">
+  <div class="tk">LIN MO · 了解我 · LM-018 · BLACK &amp; WHITE · SYSTEM ONLINE · AGE 18 · LIN MO · 了解我 · LM-018 · BLACK &amp; WHITE · SYSTEM ONLINE · AGE 18 ·&nbsp;</div>
+</footer>
+
+<div id="flash"></div>
+
+<script>
+/* ---------- 警告加载 ---------- */
+(function(){
+  var boot=document.getElementById('boot'),
+      bar=document.getElementById('bar'),
+      pct=document.getElementById('pct'),
+      log=document.getElementById('log'),
+      lines=['警告：检测到访客接入','正在校验访问权限 ...','载入个人档案 LM-018','解密完成 // ACCESS GRANTED'],
+      li=0,p=0;
+  var lt=setInterval(function(){
+    if(li<lines.length){log.textContent='> '+lines[li++];}else{clearInterval(lt);}
+  },230);
+  var iv=setInterval(function(){
+    p=Math.min(100,p+6+Math.random()*14);
+    bar.style.width=p+'%';
+    pct.textContent=Math.floor(p)+'%';
+    if(p>=100){clearInterval(iv);setTimeout(done,150);}
+  },70);
+  function done(){
+    boot.classList.add('out');
+    document.body.classList.add('on');
+    setTimeout(function(){boot.remove();},600);
+  }
+})();
+
+/* ---------- 3D 粒子 ---------- */
+(function(){
+  var cv=document.getElementById('fx'),cx=cv.getContext('2d');
+  var DPR=Math.min(window.devicePixelRatio||1,2),W,H;
+  function rs(){W=innerWidth;H=innerHeight;
+    cv.width=W*DPR;cv.height=H*DPR;
+    cv.style.width=W+'px';cv.style.height=H+'px';
+    cx.setTransform(DPR,0,0,DPR,0,0);}
+  rs();addEventListener('resize',rs);
+  var N=innerWidth<640?110:180,P=[];
+  for(var i=0;i<N;i++){
+    var k=i+.5,phi=Math.acos(1-2*k/N),th=Math.PI*(1+Math.sqrt(5))*i;
+    P.push([Math.sin(phi)*Math.cos(th),Math.cos(phi),Math.sin(phi)*Math.sin(th)]);
+  }
+  var dust=[],dn=innerWidth<640?24:40;
+  for(var j=0;j<dn;j++)dust.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,
+    s:Math.random()*1.3+.3,v:.12+Math.random()*.3});
+  var ry=0,rx=0,tx=0,ty=0;
+  addEventListener('pointermove',function(e){
+    tx=e.clientX/innerWidth-.5;ty=e.clientY/innerHeight-.5;
+  },{passive:true});
+  function frame(){
+    ry+=.002;rx+=((ty*.5)-rx)*.05;
+    cx.clearRect(0,0,W,H);
+    var ox=W/2+tx*24,oy=H/2+ty*18,
+        R=Math.min(W,H)*.3,F=1.6,
+        cy=Math.cos(ry),sy=Math.sin(ry),
+        cX=Math.cos(rx),sX=Math.sin(rx);
+    for(var i=0;i<N;i++){
+      var p=P[i],
+          x=p[0]*cy-p[2]*sy, z=p[0]*sy+p[2]*cy, y=p[1],
+          y2=y*cX-z*sX, z2=y*sX+z*cX,
+          kk=F/(F+z2),
+          px=ox+x*R*kk, py=oy+y2*R*kk,
+          a=(kk-.62)*1.05;
+      if(a<=0)continue;
+      if(a>1)a=1;
+      cx.globalAlpha=a*.85;cx.fillStyle='#fff';
+      cx.beginPath();cx.arc(px,py,Math.max(.4,(kk-.58)*2),0,6.2832);cx.fill();
+    }
+    /* 双轨道环 */
+    cx.globalAlpha=.15;cx.strokeStyle='#fff';cx.lineWidth=1;
+    cx.beginPath();cx.ellipse(ox,oy,R*1.25,R*.4,Math.sin(ry*.6)*.5+ty,0,6.2832);cx.stroke();
+    cx.beginPath();cx.ellipse(ox,oy,R*.92,R*.3,Math.cos(ry*.5)*.6-tx,0,6.2832);cx.stroke();
+    /* 上升尘埃 */
+    cx.fillStyle='#fff';
+    for(var d=0;d<dust.length;d++){
+      var u=dust[d];u.y-=u.v;
+      if(u.y<-2){u.y=H+2;u.x=Math.random()*W;}
+      cx.globalAlpha=.22;cx.fillRect(u.x,u.y,u.s,u.s);
+    }
+    cx.globalAlpha=1;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+/* ---------- 跳转白闪过渡 ---------- */
+document.addEventListener('click',function(e){
+  var a=e.target.closest('a[data-leave]');
+  if(!a)return;
+  e.preventDefault();
+  document.body.classList.add('leave');
+  setTimeout(function(){location.href=a.getAttribute('href');},240);
+});
+</script>
+</body>
+</html>

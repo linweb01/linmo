@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#060606">
+<title>个人须知 · LINMO</title>
+<style>
+:root{--bg:#060606;--fg:#f2f2f2;--dim:#9a9a9a;--line:rgba(255,255,255,.16)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--fg);
+  font-family:"PingFang SC","Microsoft YaHei","Segoe UI",system-ui,sans-serif;
+  min-height:100dvh;display:flex;flex-direction:column;overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:44px 44px;
+  -webkit-mask-image:radial-gradient(ellipse at 50% 30%,#000 25%,transparent 78%);
+          mask-image:radial-gradient(ellipse at 50% 30%,#000 25%,transparent 78%);
+}
+.scan{position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px)}
+#fx{position:fixed;inset:0;z-index:1}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:4;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:calc(env(safe-area-inset-top) + 12px) 16px 10px;
+  font:11px/1 Consolas,"Courier New",monospace;color:var(--dim);letter-spacing:.14em}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#fff;
+  margin-right:6px;animation:blink 1.4s steps(2) infinite;vertical-align:1px}
+@keyframes blink{50%{opacity:.12}}
+.back{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);
+  padding:8px 14px;color:var(--fg);text-decoration:none;
+  font:11px Consolas,monospace;letter-spacing:.25em;transition:.2s}
+.back:hover{background:#fff;color:#050505}
+/* ---- 页面内容 ---- */
+.page{position:relative;z-index:3;flex:1;width:100%;max-width:640px;
+  margin:0 auto;padding:96px 20px 90px;display:flex;flex-direction:column;gap:22px}
+h2.pt{font-size:clamp(2.4rem,11vw,4rem);font-weight:800;letter-spacing:.26em;
+  position:relative;z-index:0;animation:flick 5s infinite}
+@keyframes flick{0%,90%,100%{opacity:1}93%{opacity:.55}94%{opacity:1}96%{opacity:.75}97%{opacity:1}}
+.psub{font:11px Consolas,monospace;color:var(--dim);letter-spacing:.4em;margin-top:6px}
+.hr{width:100%;height:1px;position:relative;margin:4px 0;
+  background:linear-gradient(90deg,transparent,var(--line) 18%,var(--line) 82%,transparent)}
+.hr::after{content:"+";position:absolute;left:0;top:50%;transform:translateY(-52%);
+  color:var(--dim);font:13px Consolas,monospace;background:var(--bg);padding-right:9px}
+/* ---- 须知列表 ---- */
+.rules{border:1px solid var(--line);background:rgba(255,255,255,.03);
+  position:relative;text-align:left;list-style:none}
+.rules::before,.rules::after{content:"";position:absolute;width:14px;height:14px}
+.rules::before{top:-1px;left:-1px;border-top:2px solid #fff;border-left:2px solid #fff}
+.rules::after{bottom:-1px;right:-1px;border-bottom:2px solid #fff;border-right:2px solid #fff}
+.rules-head{display:flex;justify-content:space-between;padding:10px 16px;
+  font:10px Consolas,monospace;letter-spacing:.3em;color:var(--dim);
+  border-bottom:1px solid var(--line)}
+.rules li{display:flex;gap:16px;align-items:baseline;padding:16px;
+  border-top:1px dashed rgba(255,255,255,.12);
+  font-size:14px;line-height:1.9;color:#e6e6e6;letter-spacing:.05em;transition:background .2s}
+.rules li:first-of-type{border-top:0}
+.rules li:hover{background:rgba(255,255,255,.05)}
+.rules li b{font:400 12px Consolas,monospace;color:var(--dim);
+  letter-spacing:.1em;min-width:26px;flex:none}
+.sign{align-self:flex-end;font-size:13px;letter-spacing:.3em;color:var(--dim);
+  display:flex;align-items:center;gap:12px}
+.sign::before{content:"";width:40px;height:1px;background:var(--line)}
+/* ---- 交错入场 ---- */
+.rise{opacity:0;transform:translateY(44px)}
+body.on .rise{animation:rise .85s cubic-bezier(.16,1,.3,1) both;animation-delay:var(--d,0s)}
+@keyframes rise{from{opacity:0;transform:translateY(44px)}to{opacity:1;transform:translateY(0)}}
+/* ---- 加载层 ---- */
+#boot{position:fixed;inset:0;z-index:60;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .4s ease,visibility .4s}
+#boot.out{opacity:0;visibility:hidden}
+.bstripes{position:absolute;left:0;right:0;height:12px;opacity:.85;
+  background:repeating-linear-gradient(45deg,#e8e8e8 0 10px,#0a0a0a 10px 20px);
+  animation:slide .4s linear infinite}
+.bstripes.tp{top:0}.bstripes.bt{bottom:0}
+@keyframes slide{to{background-position:28px 0}}
+.bwrap{width:min(320px,78vw);text-align:left}
+.blog{font:11px Consolas,monospace;color:var(--dim);letter-spacing:.2em;white-space:nowrap}
+#flash{position:fixed;inset:0;z-index:58;background:#f2f2f2;opacity:0;
+  pointer-events:none;transition:opacity .22s}
+body.leave #flash{opacity:.92}
+.tkwrap{position:fixed;left:0;right:0;bottom:0;height:34px;z-index:4;overflow:hidden;
+  display:flex;align-items:center;border-top:1px solid var(--line);
+  background:rgba(6,6,6,.82);backdrop-filter:blur(4px)}
+.tk{white-space:nowrap;font:11px Consolas,monospace;color:var(--dim);
+  letter-spacing:.28em;animation:tk 24s linear infinite}
+@keyframes tk{to{transform:translateX(-50%)}}
+@media (max-width:520px){h2.pt{letter-spacing:.14em}}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .rise{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div id="boot">
+  <div class="bstripes tp"></div>
+  <div class="bstripes bt"></div>
+  <div class="bwrap"><div class="blog" id="blog">&gt; LOADING // 03 NOTICE</div></div>
+</div>
+
+<canvas id="fx"></canvas>
+<div class="scan"></div>
+
+<header class="topbar">
+  <a class="back" data-leave href="index.html">&lt;- 返回</a>
+  <span><i class="dot"></i>LM-018 / 03</span>
+</header>
+
+<section class="page">
+  <div>
+    <h2 class="pt rise" style="--d:.05s">个人须知</h2>
+    <div class="psub rise" style="--d:.14s">NOTICE / 03 · PLEASE READ</div>
+  </div>
+  <div class="hr rise" style="--d:.22s"></div>
+
+  <ol class="rules rise" style="--d:.3s">
+    <div class="rules-head"><span>TERMS / 阅读须知</span><span>5 ITEMS</span></div>
+    <li><b>01</b>本页为林陌的个人自介，内容仅代表本人。</li>
+    <li><b>02</b>请文明交流，互相尊重，Thanks。</li>
+    <li><b>03</b>未经允许，请勿转载或盗用本页设计。</li>
+    <li><b>04</b>有事请直说，看到消息会回复。</li>
+    <li><b>05</b>感谢来访，祝你今天愉快。</li>
+  </ol>
+
+  <div class="sign rise" style="--d:.45s">—— 林陌</div>
+</section>
+
+<footer class="tkwrap">
+  <div class="tk">NOTICE · 个人须知 · LM-018 · PLEASE READ · THANK YOU · NOTICE · 个人须知 · LM-018 · PLEASE READ · THANK YOU ·&nbsp;</div>
+</footer>
+
+<div id="flash"></div>
+
+<script>
+/* 快速加载 */
+(function(){
+  var boot=document.getElementById('boot'),p=0;
+  var iv=setInterval(function(){
+    p+=28;
+    if(p>=100){p=100;clearInterval(iv);setTimeout(done,80);}
+    document.getElementById('blog').textContent='> LOADING // 03 NOTICE '+Math.floor(p)+'%';
+  },60);
+  function done(){
+    boot.classList.add('out');
+    document.body.classList.add('on');
+    setTimeout(function(){boot.remove();},500);
+  }
+})();
+
+/* 3D 粒子 */
+(function(){
+  var cv=document.getElementById('fx'),cx=cv.getContext('2d');
+  var DPR=Math.min(window.devicePixelRatio||1,2),W,H;
+  function rs(){W=innerWidth;H=innerHeight;
+    cv.width=W*DPR;cv.height=H*DPR;
+    cv.style.width=W+'px';cv.style.height=H+'px';
+    cx.setTransform(DPR,0,0,DPR,0,0);}
+  rs();addEventListener('resize',rs);
+  var N=innerWidth<640?90:150,P=[];
+  for(var i=0;i<N;i++){
+    var k=i+.5,phi=Math.acos(1-2*k/N),th=Math.PI*(1+Math.sqrt(5))*i;
+    P.push([Math.sin(phi)*Math.cos(th),Math.cos(phi),Math.sin(phi)*Math.sin(th)]);
+  }
+  var ry=0,rx=0,tx=0,ty=0;
+  addEventListener('pointermove',function(e){
+    tx=e.clientX/innerWidth-.5;ty=e.clientY/innerHeight-.5;
+  },{passive:true});
+  function frame(){
+    ry+=.002;rx+=((ty*.5)-rx)*.05;
+    cx.clearRect(0,0,W,H);
+    var ox=W/2+tx*24,oy=H/2+ty*18,R=Math.min(W,H)*.3,F=1.6,
+        cy=Math.cos(ry),sy=Math.sin(ry),cX=Math.cos(rx),sX=Math.sin(rx);
+    for(var i=0;i<N;i++){
+      var p=P[i],x=p[0]*cy-p[2]*sy,z=p[0]*sy+p[2]*cy,y=p[1],
+          y2=y*cX-z*sX,z2=y*sX+z*cX,kk=F/(F+z2),
+          a=(kk-.62)*1.05;
+      if(a<=0)continue;if(a>1)a=1;
+      cx.globalAlpha=a*.6;cx.fillStyle='#fff';
+      cx.beginPath();cx.arc(ox+x*R*kk,oy+y2*R*kk,Math.max(.4,(kk-.58)*2),0,6.2832);cx.fill();
+    }
+    cx.globalAlpha=1;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+/* 返回过渡 */
+document.addEventListener('click',function(e){
+  var a=e.target.closest('a[data-leave]');
+  if(!a)return;
+  e.preventDefault();
+  document.body.classList.add('leave');
+  setTimeout(function(){location.href=a.getAttribute('href');},240);
+});
+</script>
+</body>
+</html>
