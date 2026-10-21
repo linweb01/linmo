@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#060606">
-<title>个人须知 · LINMO</title>
+<title>须知 · LINMO</title>
 <style>
 :root{--bg:#060606;--fg:#f2f2f2;--dim:#9a9a9a;--line:rgba(255,255,255,.16)}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -98,6 +98,14 @@ body.leave #flash{opacity:.92}
   *{animation:none!important;transition:none!important}
   .rise{opacity:1;transform:none}
 }
+/* ---- 网易云音乐（隐藏自动播放） ---- */
+.music{position:fixed;left:-9999px;top:0;width:300px;height:86px;border:0;z-index:5}
+.music-toggle{position:fixed;left:16px;bottom:46px;z-index:6;width:38px;height:38px;
+  border:1px solid var(--line);background:rgba(6,6,6,.82);backdrop-filter:blur(4px);
+  color:var(--fg);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font:12px Consolas,monospace;letter-spacing:.1em;transition:.2s}
+.music-toggle:hover{background:#fff;color:#050505}
+.music-toggle.playing{color:#fff;border-color:#fff}
 </style>
 </head>
 <body>
@@ -113,23 +121,25 @@ body.leave #flash{opacity:.92}
 
 <header class="topbar">
   <a class="back" data-leave href="index.html">&lt;- 返回</a>
-  <span><i class="dot"></i>LM-018 / 03</span>
+  <span><i class="dot"></i>LM-018 / 02</span>
 </header>
 
 <section class="page">
   <div>
-    <h2 class="pt rise" style="--d:.05s">个人须知</h2>
-    <div class="psub rise" style="--d:.14s">NOTICE / 03 · PLEASE READ</div>
+    <h2 class="pt rise" style="--d:.05s">须 知</h2>
+    <div class="psub rise" style="--d:.14s">NOTICE / 02 · PLEASE READ</div>
   </div>
   <div class="hr rise" style="--d:.22s"></div>
 
   <ol class="rules rise" style="--d:.3s">
-    <div class="rules-head"><span>TERMS / 阅读须知</span><span>5 ITEMS</span></div>
-    <li><b>01</b>本页为林陌的个人自介，内容仅代表本人。</li>
-    <li><b>02</b>请文明交流，互相尊重，Thanks。</li>
-    <li><b>03</b>未经允许，请勿转载或盗用本页设计。</li>
-    <li><b>04</b>有事请直说，看到消息会回复。</li>
-    <li><b>05</b>感谢来访，祝你今天愉快。</li>
+    <div class="rules-head"><span>TERMS / 阅读须知</span><span>7 ITEMS</span></div>
+    <li><b>01</b>单前请告知备注和喜雷，风格不固定，未告知雷点默认无雷。</li>
+    <li><b>02</b>接单 5min / 10min（0.5h / 1h）内可退换，过时不退不换。</li>
+    <li><b>03</b>婉拒抽象 / 过度不配合的板。</li>
+    <li><b>04</b>拒单内截图及单外讨论。</li>
+    <li><b>05</b>完单后拒绝因技术问题退单。</li>
+    <li><b>06</b>请不要单内扣 6 以及 emoji 等表情包。</li>
+    <li><b>07</b>此人只是窝囊费望周知。</li>
   </ol>
 
   <div class="sign rise" style="--d:.45s">—— 林陌</div>
@@ -140,6 +150,10 @@ body.leave #flash{opacity:.92}
 </footer>
 
 <div id="flash"></div>
+
+<!-- 网易云音乐（隐藏自动播放） -->
+<iframe id="music" class="music" src="https://music.163.com/outchain/player?type=2&id=2124103398&auto=1&height=66" allow="autoplay" loading="eager"></iframe>
+<button id="musicToggle" class="music-toggle" title="音乐开关">♪</button>
 
 <script>
 /* 快速加载 */
@@ -202,6 +216,37 @@ document.addEventListener('click',function(e){
   document.body.classList.add('leave');
   setTimeout(function(){location.href=a.getAttribute('href');},240);
 });
+
+/* 网易云音乐：隐藏自动播放 + 首次交互强制播放 */
+(function(){
+  var m=document.getElementById('music'),
+      tog=document.getElementById('musicToggle'),
+      SRC=m.getAttribute('src'),
+      playing=true, tried=false;
+  function forcePlay(){
+    if(tried)return; tried=true;
+    if(!playing)return;
+    m.src=SRC+(SRC.indexOf('?')>-1?'&':'?')+'_t='+Date.now();
+    tog.classList.add('playing');
+  }
+  addEventListener('pointerdown',forcePlay,{once:true});
+  addEventListener('keydown',forcePlay,{once:true});
+  tog.addEventListener('click',function(){
+    playing=!playing;
+    if(playing){
+      m.src=SRC+(SRC.indexOf('?')>-1?'&':'?')+'_t='+Date.now();
+      tog.textContent='♪';tog.classList.add('playing');
+    }else{
+      m.src='about:blank';
+      tog.textContent='✕';tog.classList.remove('playing');
+    }
+    localStorage.setItem('lm_music',playing?'1':'0');
+  });
+  if(localStorage.getItem('lm_music')==='0'){
+    playing=false;m.src='about:blank';
+    tog.textContent='✕';tog.classList.remove('playing');
+  }
+})();
 </script>
 </body>
 </html>

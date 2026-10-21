@@ -15,7 +15,6 @@ body{
   min-height:100dvh;display:flex;flex-direction:column;overflow-x:hidden;
   -webkit-tap-highlight-color:transparent;
 }
-/* ---- 网格底纹 ---- */
 body::before{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
   background-image:
@@ -25,22 +24,13 @@ body::before{
   -webkit-mask-image:radial-gradient(ellipse at 50% 42%,#000 25%,transparent 78%);
           mask-image:radial-gradient(ellipse at 50% 42%,#000 25%,transparent 78%);
 }
-/* ---- 扫描线 ---- */
 .scan{position:fixed;inset:0;z-index:2;pointer-events:none;
   background:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px)}
-/* ---- 3D 粒子画布 ---- */
 #fx{position:fixed;inset:0;z-index:1}
-/* ---- 背景大字 ---- */
 .bgt{position:fixed;right:2px;top:50%;transform:translateY(-50%);z-index:1;
   writing-mode:vertical-rl;font:800 82px/1 Consolas,monospace;letter-spacing:.3em;
   color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.06);
   pointer-events:none;user-select:none}
-/* ---- 十字准星 ---- */
-.cross{position:fixed;width:18px;height:18px;z-index:1;opacity:.45;pointer-events:none}
-.cross::before,.cross::after{content:"";position:absolute;background:#fff}
-.cross::before{left:50%;top:0;bottom:0;width:1px}
-.cross::after{top:50%;left:0;right:0;height:1px}
-.c1{left:16px;top:100px}.c2{right:16px;bottom:64px}
 /* ---- 顶栏 ---- */
 .topbar{position:fixed;top:0;left:0;right:0;z-index:4;
   display:flex;justify-content:space-between;align-items:center;
@@ -50,10 +40,17 @@ body::before{
 .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#fff;
   margin-right:6px;animation:blink 1.4s steps(2) infinite;vertical-align:1px}
 @keyframes blink{50%{opacity:.12}}
-/* ---- 主体 ---- */
+.back{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);
+  padding:8px 14px;color:var(--fg);text-decoration:none;
+  font:11px Consolas,monospace;letter-spacing:.25em;transition:.2s;cursor:pointer;background:transparent}
+.back:hover{background:#fff;color:#050505}
+/* ---- 主体（所有 section 共用） ---- */
 main{flex:1;position:relative;z-index:3;display:flex;flex-direction:column;
   align-items:center;justify-content:center;text-align:center;
-  padding:80px 22px 74px}
+  padding:80px 22px 74px;width:100%}
+.section{display:none;width:100%;flex-direction:column;align-items:center}
+.section.active{display:flex}
+/* ---- 首页 ---- */
 .tag{font:11px Consolas,monospace;letter-spacing:.4em;color:var(--dim);
   border:1px solid var(--line);padding:7px 10px 7px 14px}
 h1.glitch{margin:20px 0 4px;font-size:clamp(3.2rem,17vw,6.6rem);font-weight:800;
@@ -79,9 +76,8 @@ h1.glitch{margin:20px 0 4px;font-size:clamp(3.2rem,17vw,6.6rem);font-weight:800;
 .sub{font:11px Consolas,monospace;letter-spacing:.52em;color:var(--dim);margin-bottom:24px}
 .hr{width:min(420px,82%);height:1px;margin:6px 0 26px;position:relative;
   background:linear-gradient(90deg,transparent,var(--line) 18%,var(--line) 82%,transparent)}
-.hr::after{content:"+";position:absolute;left:50%;top:50%;transform:translate(-50%,-53%);
+.hr::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-53%);
   color:var(--dim);font:13px Consolas,monospace;background:var(--bg);padding:0 9px}
-/* ---- 资料卡 ---- */
 .card{width:min(420px,100%);text-align:left;position:relative;
   border:1px solid var(--line);background:rgba(255,255,255,.03);backdrop-filter:blur(2px)}
 .card::before,.card::after{content:"";position:absolute;width:14px;height:14px}
@@ -98,12 +94,12 @@ h1.glitch{margin:20px 0 4px;font-size:clamp(3.2rem,17vw,6.6rem);font-weight:800;
 .row b{font-size:16px;font-weight:600;letter-spacing:.24em}
 .cursor{display:inline-block;width:8px;height:14px;background:#fff;margin-left:6px;
   vertical-align:-2px;animation:blink 1s steps(2) infinite}
-/* ---- 按钮 ---- */
 .btns{margin-top:36px;width:min(420px,100%);display:flex;flex-direction:column;gap:14px}
 .btn{display:flex;align-items:center;gap:16px;padding:16px 18px;
   border:1px solid rgba(255,255,255,.55);color:var(--fg);text-decoration:none;
   font-size:15px;font-weight:600;letter-spacing:.44em;text-indent:.1em;
-  position:relative;overflow:hidden;transition:background .22s,color .22s,transform .15s}
+  position:relative;overflow:hidden;cursor:pointer;background:transparent;
+  transition:background .22s,color .22s,transform .15s}
 .btn .no{font:11px Consolas,monospace;color:var(--dim);letter-spacing:.1em;text-indent:0}
 .btn .ar{margin-left:auto;font-family:Consolas,monospace;transition:transform .22s;text-indent:0}
 .btn:hover{background:var(--fg);color:#050505}
@@ -111,6 +107,63 @@ h1.glitch{margin:20px 0 4px;font-size:clamp(3.2rem,17vw,6.6rem);font-weight:800;
 .btn:hover .ar{transform:translateX(6px)}
 .btn:active{transform:scale(.97)}
 .hint{margin-top:18px;font:10px Consolas,monospace;color:#666;letter-spacing:.36em}
+/* ---- 子页通用 ---- */
+.page{position:relative;z-index:3;width:100%;max-width:640px;
+  display:flex;flex-direction:column;gap:22px;text-align:left;align-items:flex-start}
+.page .pt{font-size:clamp(2.4rem,11vw,4rem);font-weight:800;letter-spacing:.26em;
+  position:relative;z-index:0;animation:flick 5s infinite;text-align:left}
+.page .psub{font:11px Consolas,monospace;color:var(--dim);letter-spacing:.4em;margin-top:6px}
+.page .hr{width:100%;margin:4px 0}
+.page .hr::after{left:0;transform:translateY(-52%);padding-right:9px;padding-left:0}
+/* ---- 风格页 ---- */
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{border:1px solid var(--line);padding:9px 14px 9px 17px;font-size:12px;
+  letter-spacing:.3em;text-indent:.15em;background:rgba(255,255,255,.03);transition:.2s}
+.chip:hover{background:#fff;color:#050505}
+.panel{border:1px solid var(--line);background:rgba(255,255,255,.03);
+  position:relative;padding:18px;width:100%}
+.panel::before{content:"";position:absolute;top:-1px;left:-1px;width:12px;height:12px;
+  border-top:2px solid #fff;border-left:2px solid #fff}
+.panel h3{font:400 11px Consolas,monospace;letter-spacing:.4em;color:var(--dim);
+  margin-bottom:12px}
+.panel p{font-size:14px;line-height:2.1;color:#dcdcdc;letter-spacing:.06em}
+/* ---- 须知页 ---- */
+.rules{border:1px solid var(--line);background:rgba(255,255,255,.03);
+  position:relative;text-align:left;list-style:none;width:100%}
+.rules::before,.rules::after{content:"";position:absolute;width:14px;height:14px}
+.rules::before{top:-1px;left:-1px;border-top:2px solid #fff;border-left:2px solid #fff}
+.rules::after{bottom:-1px;right:-1px;border-bottom:2px solid #fff;border-right:2px solid #fff}
+.rules-head{display:flex;justify-content:space-between;padding:10px 16px;
+  font:10px Consolas,monospace;letter-spacing:.3em;color:var(--dim);
+  border-bottom:1px solid var(--line)}
+.rules li{display:flex;gap:16px;align-items:baseline;padding:16px;
+  border-top:1px dashed rgba(255,255,255,.12);
+  font-size:14px;line-height:1.9;color:#e6e6e6;letter-spacing:.05em;transition:background .2s}
+.rules li:first-of-type{border-top:0}
+.rules li:hover{background:rgba(255,255,255,.05)}
+.rules li b{font:400 12px Consolas,monospace;color:var(--dim);
+  letter-spacing:.1em;min-width:26px;flex:none}
+.sign{align-self:flex-end;font-size:13px;letter-spacing:.3em;color:var(--dim);
+  display:flex;align-items:center;gap:12px}
+.sign::before{content:"";width:40px;height:1px;background:var(--line)}
+/* ---- 板块内跳转链接（随页面滚动，右对齐） ---- */
+.linkrow{width:min(420px,100%);display:flex;flex-direction:column;align-items:flex-end;
+  gap:10px;margin-top:26px}
+.linkrow.alt{width:100%}
+.linkrow .mlink{display:inline-flex;align-items:center;gap:10px;
+  text-decoration:none;color:var(--fg);font:600 14px/1 "PingFang SC","Microsoft YaHei",sans-serif;
+  letter-spacing:.35em;padding:4px 0;transition:opacity .2s}
+.linkrow .mlink .ar{font-family:Consolas,monospace;letter-spacing:0;transition:transform .22s}
+.linkrow .mlink:hover{opacity:.7}
+.linkrow .mlink:hover .ar{transform:translateX(6px)}
+/* ---- 网易云音乐（隐藏自动播放） ---- */
+.music{position:fixed;left:-9999px;top:0;width:300px;height:86px;border:0;z-index:5}
+.music-toggle{position:fixed;left:16px;bottom:46px;z-index:6;width:38px;height:38px;
+  border:1px solid var(--line);background:rgba(6,6,6,.82);backdrop-filter:blur(4px);
+  color:var(--fg);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font:12px Consolas,monospace;letter-spacing:.1em;transition:.2s}
+.music-toggle:hover{background:#fff;color:#050505}
+.music-toggle.playing{color:#fff;border-color:#fff}
 /* ---- 底部滚动条 ---- */
 .tkwrap{position:fixed;left:0;right:0;bottom:0;height:34px;z-index:4;overflow:hidden;
   display:flex;align-items:center;border-top:1px solid var(--line);
@@ -157,6 +210,8 @@ body.leave #flash{opacity:.92}
   .bgt{display:none}
   h1.glitch{letter-spacing:.1em;text-indent:.1em}
   .btn{letter-spacing:.3em}
+  .page .pt{letter-spacing:.14em}
+  .fixedlinks{right:14px;bottom:46px}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
@@ -181,37 +236,105 @@ body.leave #flash{opacity:.92}
 <canvas id="fx"></canvas>
 <div class="scan"></div>
 <div class="bgt">LINMO</div>
-<div class="cross c1"></div>
-<div class="cross c2"></div>
 
 <header class="topbar">
-  <span>LM-018 <b>// PERSONAL FILE</b></span>
-  <span><i class="dot"></i>ONLINE</span>
+  <span id="topLeft">LM-018 <b>// PERSONAL FILE</b></span>
+  <span><i class="dot"></i><span id="topRight">ONLINE</span></span>
 </header>
 
 <main>
-  <div class="tag rise" style="--d:.05s">SELF INTRODUCTION · 自介档案</div>
-  <h1 class="glitch rise" data-text="了解我" style="--d:.15s">了解我</h1>
-  <div class="sub rise" style="--d:.28s">NICE TO MEET YOU</div>
-  <div class="hr rise" style="--d:.36s"></div>
+  <!-- ===== 首页：了解我 ===== -->
+  <section class="section active" id="sec-home">
+    <div class="tag rise" style="--d:.05s">SELF INTRODUCTION · 自介档案</div>
+    <h1 class="glitch rise" data-text="了解我" style="--d:.15s">了解我</h1>
+    <div class="sub rise" style="--d:.28s">NICE TO MEET YOU</div>
+    <div class="hr rise" style="--d:.36s"></div>
 
-  <div class="card rise" style="--d:.45s">
-    <div class="card-h"><span>FILE / LM-018</span><span>ARCHIVE OK</span></div>
-    <div class="row"><span>姓名 NAME</span><b>林陌</b></div>
-    <div class="row"><span>性别 GENDER</span><b>女</b></div>
-    <div class="row"><span>年龄 AGE</span><b>18<i class="cursor"></i></b></div>
-  </div>
+    <div class="card rise" style="--d:.45s">
+      <div class="card-h"><span>FILE / LM-018</span><span>ARCHIVE OK</span></div>
+      <div class="row"><span>姓名 NAME</span><b>林陌</b></div>
+      <div class="row"><span>性别 GENDER</span><b>女</b></div>
+      <div class="row"><span>年龄 AGE</span><b>18</b></div>
+      <div class="row"><span>星座 ZODIAC</span><b>天蝎座</b></div>
+      <div class="row"><span>属性 ATTR</span><b>h</b></div>
+      <div class="row"><span>MBTI</span><b>ISFP</b></div>
+      <div class="row"><span>常驻建模</span><b>巫师<i class="cursor"></i></b></div>
+    </div>
 
-  <nav class="btns">
-    <a class="btn rise" data-leave href="style.html" style="--d:.62s">
-      <span class="no">01</span>风 格<span class="ar">-&gt;</span></a>
-    <a class="btn rise" data-leave href="profile.html" style="--d:.76s">
-      <span class="no">02</span>个人资料<span class="ar">-&gt;</span></a>
-    <a class="btn rise" data-leave href="notice.html" style="--d:.90s">
-      <span class="no">03</span>个人须知<span class="ar">-&gt;</span></a>
-  </nav>
+    <nav class="btns">
+      <button class="btn rise" data-goto="style" style="--d:.62s">
+        <span class="no">01</span>风 格<span class="ar">-&gt;</span></button>
+      <button class="btn rise" data-goto="notice" style="--d:.76s">
+        <span class="no">02</span>须 知<span class="ar">-&gt;</span></button>
+    </nav>
 
-  <div class="hint rise" style="--d:1.05s">点击按钮 · 进入对应页面</div>
+    <div class="hint rise" style="--d:.9s">点击按钮 · 进入对应页面</div>
+
+    <div class="linkrow rise" style="--d:1.05s">
+      <a class="mlink" href="https://www.kdocs.cn/l/coKmma2ZYtRK" target="_blank" rel="noopener">板评<span class="ar">-&gt;</span></a>
+      <a class="mlink" href="https://www.kdocs.cn/l/cf4s89xjmQhV" target="_blank" rel="noopener">文档资料<span class="ar">-&gt;</span></a>
+    </div>
+  </section>
+
+  <!-- ===== 风格页 ===== -->
+  <section class="section" id="sec-style">
+    <div class="page">
+      <div>
+        <h2 class="pt rise" style="--d:.05s">风 格</h2>
+        <div class="psub rise" style="--d:.14s">STYLE / 01 · BLACK &amp; WHITE</div>
+      </div>
+      <div class="hr rise" style="--d:.22s"></div>
+
+      <div class="chips rise" style="--d:.3s">
+        <span class="chip">伪 高</span>
+        <span class="chip">逻 辑</span>
+        <span class="chip">微 剖</span>
+        <span class="chip">低 无</span>
+        <span class="chip">血 暴</span>
+        <span class="chip">恶趣味</span>
+      </div>
+
+      <div class="panel rise" style="--d:.4s">
+        <h3>STATEMENT / 我喜欢的画面</h3>
+        <p>喜欢干净利落的画面：黑是黑，白是白，靠线条与留白说话。
+           不需要太多颜色，光影和层次就足够表达情绪。</p>
+      </div>
+
+      <div class="panel rise" style="--d:.5s">
+        <h3>DETAIL / 细节控</h3>
+        <p>对细节有一点执念：对齐、间距、节奏，甚至一个像素的偏差都会在意。
+           简洁从来不是简单，而是反复删减之后刚刚好的样子。</p>
+      </div>
+
+      <div class="linkrow alt rise" style="--d:.6s">
+        <a class="mlink" href="https://www.kdocs.cn/l/conpMfLKreT1" target="_blank" rel="noopener">话术<span class="ar">-&gt;</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 须知页 ===== -->
+  <section class="section" id="sec-notice">
+    <div class="page">
+      <div>
+        <h2 class="pt rise" style="--d:.05s">须 知</h2>
+        <div class="psub rise" style="--d:.14s">NOTICE / 02 · PLEASE READ</div>
+      </div>
+      <div class="hr rise" style="--d:.22s"></div>
+
+      <ol class="rules rise" style="--d:.3s">
+        <div class="rules-head"><span>TERMS / 阅读须知</span><span>7 ITEMS</span></div>
+        <li><b>01</b>单前请告知备注和喜雷，风格不固定，未告知雷点默认无雷。</li>
+        <li><b>02</b>接单 5min / 10min（0.5h / 1h）内可退换，过时不退不换。</li>
+        <li><b>03</b>婉拒抽象 / 过度不配合的板。</li>
+        <li><b>04</b>拒单内截图及单外讨论。</li>
+        <li><b>05</b>完单后拒绝因技术问题退单。</li>
+        <li><b>06</b>请不要单内扣 6 以及 emoji 等表情包。</li>
+        <li><b>07</b>此人只是窝囊费望周知。</li>
+      </ol>
+
+      <div class="sign rise" style="--d:.45s">—— 林陌</div>
+    </div>
+  </section>
 </main>
 
 <footer class="tkwrap">
@@ -219,6 +342,10 @@ body.leave #flash{opacity:.92}
 </footer>
 
 <div id="flash"></div>
+
+<!-- 网易云音乐（隐藏自动播放，单页切换不重载） -->
+<iframe id="music" class="music" src="https://music.163.com/outchain/player?type=2&id=2124103398&auto=1&height=66" allow="autoplay" loading="eager"></iframe>
+<button id="musicToggle" class="music-toggle" title="音乐开关">♪</button>
 
 <script>
 /* ---------- 警告加载 ---------- */
@@ -285,11 +412,9 @@ body.leave #flash{opacity:.92}
       cx.globalAlpha=a*.85;cx.fillStyle='#fff';
       cx.beginPath();cx.arc(px,py,Math.max(.4,(kk-.58)*2),0,6.2832);cx.fill();
     }
-    /* 双轨道环 */
     cx.globalAlpha=.15;cx.strokeStyle='#fff';cx.lineWidth=1;
     cx.beginPath();cx.ellipse(ox,oy,R*1.25,R*.4,Math.sin(ry*.6)*.5+ty,0,6.2832);cx.stroke();
     cx.beginPath();cx.ellipse(ox,oy,R*.92,R*.3,Math.cos(ry*.5)*.6-tx,0,6.2832);cx.stroke();
-    /* 上升尘埃 */
     cx.fillStyle='#fff';
     for(var d=0;d<dust.length;d++){
       var u=dust[d];u.y-=u.v;
@@ -302,14 +427,82 @@ body.leave #flash{opacity:.92}
   requestAnimationFrame(frame);
 })();
 
-/* ---------- 跳转白闪过渡 ---------- */
-document.addEventListener('click',function(e){
-  var a=e.target.closest('a[data-leave]');
-  if(!a)return;
-  e.preventDefault();
-  document.body.classList.add('leave');
-  setTimeout(function(){location.href=a.getAttribute('href');},240);
-});
+/* ---------- 单页切换（不重载页面，音乐不中断） ---------- */
+(function(){
+  var sections=document.querySelectorAll('.section'),
+      topLeft=document.getElementById('topLeft'),
+      topRight=document.getElementById('topRight');
+  function show(id){
+    sections.forEach(function(s){
+      if(s.id==='sec-'+id){
+        s.classList.add('active');
+        /* 重新触发入场动画 */
+        s.querySelectorAll('.rise').forEach(function(el){
+          el.style.animation='none';
+          void el.offsetWidth;
+          el.style.animation='';
+        });
+      }else{
+        s.classList.remove('active');
+      }
+    });
+    /* 顶栏 */
+    if(id==='home'){
+      topLeft.innerHTML='LM-018 <b>// PERSONAL FILE</b>';
+      topRight.textContent='ONLINE';
+    }else{
+      topLeft.innerHTML='<button class="back" data-goto="home">&lt;- 返回</button>';
+      topRight.textContent=id==='style'?'LM-018 / 01':'LM-018 / 02';
+    }
+    document.title=(id==='home'?'了解我':id==='style'?'风格':'须知')+' · LINMO';
+    window.scrollTo(0,0);
+  }
+  document.addEventListener('click',function(e){
+    var t=e.target.closest('[data-goto]');
+    if(!t)return;
+    var id=t.getAttribute('data-goto');
+    /* 白闪过渡 */
+    document.body.classList.add('leave');
+    setTimeout(function(){
+      show(id);
+      document.body.classList.remove('leave');
+    },180);
+  });
+  /* 初始化显示首页链接 */
+  show('home');
+})();
+
+/* ---------- 网易云音乐：隐藏自动播放 + 首次交互强制播放 ---------- */
+(function(){
+  var m=document.getElementById('music'),
+      tog=document.getElementById('musicToggle'),
+      SRC=m.getAttribute('src'),
+      playing=true, tried=false;
+  function forcePlay(){
+    if(tried)return; tried=true;
+    if(!playing)return;
+    m.src=SRC+(SRC.indexOf('?')>-1?'&':'?')+'_t='+Date.now();
+    tog.classList.add('playing');
+  }
+  addEventListener('pointerdown',forcePlay,{once:true});
+  addEventListener('keydown',forcePlay,{once:true});
+  tog.addEventListener('click',function(e){
+    e.stopPropagation();
+    playing=!playing;
+    if(playing){
+      m.src=SRC+(SRC.indexOf('?')>-1?'&':'?')+'_t='+Date.now();
+      tog.textContent='♪';tog.classList.add('playing');
+    }else{
+      m.src='about:blank';
+      tog.textContent='✕';tog.classList.remove('playing');
+    }
+    localStorage.setItem('lm_music',playing?'1':'0');
+  });
+  if(localStorage.getItem('lm_music')==='0'){
+    playing=false;m.src='about:blank';
+    tog.textContent='✕';tog.classList.remove('playing');
+  }
+})();
 </script>
 </body>
 </html>

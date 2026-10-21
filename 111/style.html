@@ -101,6 +101,21 @@ body.leave #flash{opacity:.92}
 .tk{white-space:nowrap;font:11px Consolas,monospace;color:var(--dim);
   letter-spacing:.28em;animation:tk 24s linear infinite}
 @keyframes tk{to{transform:translateX(-50%)}}
+/* ---- 底部跳转链接（右下角） ---- */
+.mlink{position:fixed;right:20px;bottom:50px;z-index:5;display:flex;align-items:center;gap:10px;
+  text-decoration:none;color:var(--fg);font:600 14px/1 "PingFang SC","Microsoft YaHei",sans-serif;
+  letter-spacing:.35em;padding:10px 0;transition:opacity .2s}
+.mlink .ar{font-family:Consolas,monospace;letter-spacing:0;transition:transform .22s}
+.mlink:hover{opacity:.7}
+.mlink:hover .ar{transform:translateX(6px)}
+/* ---- 网易云音乐（隐藏自动播放） ---- */
+.music{position:fixed;left:-9999px;top:0;width:300px;height:86px;border:0;z-index:5}
+.music-toggle{position:fixed;left:16px;bottom:46px;z-index:6;width:38px;height:38px;
+  border:1px solid var(--line);background:rgba(6,6,6,.82);backdrop-filter:blur(4px);
+  color:var(--fg);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font:12px Consolas,monospace;letter-spacing:.1em;transition:.2s}
+.music-toggle:hover{background:#fff;color:#050505}
+.music-toggle.playing{color:#fff;border-color:#fff}
 @media (max-width:520px){h2.pt{letter-spacing:.14em}}
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
@@ -132,15 +147,13 @@ body.leave #flash{opacity:.92}
   <div class="hr rise" style="--d:.22s"></div>
 
   <div class="chips rise" style="--d:.3s">
-    <span class="chip">黑 白</span>
-    <span class="chip">极 简</span>
-    <span class="chip">线 条</span>
-    <span class="chip">留 白</span>
-    <span class="chip">光 影</span>
-    <span class="chip">故障艺术</span>
+    <span class="chip">伪 高</span>
+    <span class="chip">逻 辑</span>
+    <span class="chip">微 剖</span>
+    <span class="chip">低 无</span>
+    <span class="chip">血 暴</span>
+    <span class="chip">恶趣味</span>
   </div>
-
-  <div class="art rise" style="--d:.4s"><b>RENDERING / 风格样张 01</b></div>
 
   <div class="panel rise" style="--d:.5s">
     <h3>STATEMENT / 我喜欢的画面</h3>
@@ -153,6 +166,10 @@ body.leave #flash{opacity:.92}
     <p>对细节有一点执念：对齐、间距、节奏，甚至一个像素的偏差都会在意。
        简洁从来不是简单，而是反复删减之后刚刚好的样子。</p>
   </div>
+
+  <a class="mlink rise" href="https://www.kdocs.cn/l/conpMfLKreT1" target="_blank" rel="noopener" style="--d:.7s">
+    查看话术<span class="ar">-&gt;</span>
+  </a>
 </section>
 
 <footer class="tkwrap">
@@ -160,6 +177,10 @@ body.leave #flash{opacity:.92}
 </footer>
 
 <div id="flash"></div>
+
+<!-- 网易云音乐（隐藏自动播放） -->
+<iframe id="music" class="music" src="https://music.163.com/outchain/player?type=2&id=2124103398&auto=1&height=66" allow="autoplay" loading="eager"></iframe>
+<button id="musicToggle" class="music-toggle" title="音乐开关">♪</button>
 
 <script>
 /* 快速加载 */
@@ -222,6 +243,37 @@ document.addEventListener('click',function(e){
   document.body.classList.add('leave');
   setTimeout(function(){location.href=a.getAttribute('href');},240);
 });
+
+/* 网易云音乐：隐藏自动播放 + 首次交互强制播放 */
+(function(){
+  var m=document.getElementById('music'),
+      tog=document.getElementById('musicToggle'),
+      SRC=m.getAttribute('src'),
+      playing=true, tried=false;
+  function forcePlay(){
+    if(tried)return; tried=true;
+    if(!playing)return;
+    m.src=SRC+(SRC.indexOf('?')>-1?'&':'?')+'_t='+Date.now();
+    tog.classList.add('playing');
+  }
+  addEventListener('pointerdown',forcePlay,{once:true});
+  addEventListener('keydown',forcePlay,{once:true});
+  tog.addEventListener('click',function(){
+    playing=!playing;
+    if(playing){
+      m.src=SRC+(SRC.indexOf('?')>-1?'&':'?')+'_t='+Date.now();
+      tog.textContent='♪';tog.classList.add('playing');
+    }else{
+      m.src='about:blank';
+      tog.textContent='✕';tog.classList.remove('playing');
+    }
+    localStorage.setItem('lm_music',playing?'1':'0');
+  });
+  if(localStorage.getItem('lm_music')==='0'){
+    playing=false;m.src='about:blank';
+    tog.textContent='✕';tog.classList.remove('playing');
+  }
+})();
 </script>
 </body>
 </html>
